@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Just Encrypt - the right way to share secrets</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <header>
+      <h1>Just Encrypt - the right way to share secrets</h1>
+    </header>
+    <div class="container">
+      <section class="instructions">
+        <h3>If you don't have a key pair yet:</h3>
+        <ol>
+          <li>Click on "Generate keys" to generate your pair of private and public keys.</li>
+          <li><strong>Do not</strong> share your private key with anyone!</li>
+          <li>Share your public key with someone who needs to send you a secret securely.</li>
+        </ol>
+        <h3>How to send a secret to someone:</h3>
+        <ol>
+          <li>Get the public key from the recipient and put it into the "Public Key" text area.</li>
+          <li>Type your secret into the "Unencrypted" text box and click on the "Encrypt" button.</li>
+          <li>Copy the contents of the "Encrypted" text box and send it to the recipient.</li>
+        </ol>
+        <h3>How to receive a secret from someone:</h3>
+        <ol>
+          <li>Get the encrypted content from the sender and put it into the "Encrypted" text box.</li>
+          <li>Put your private key into the "Private Key" text area.</li>
+          <li>Click on the "Decrypt" button and you will see the secret in the "Unencrypted" text box.</li>
+        </ol>
+      </section>
+      <section class="generate-keys">
+        <h2>Generate Key Pair / Use existing Key Pair</h2>
+        <input class="generate-key-button" type="button" value="Generate keys">
+        <section class="generate-private">
+          <h3>Private Key</h3>
+          <label for="generated-private-key">for decrypting secrets that others sent to you</label>
+          <textarea
+            id="generated-private-key"
+            wrap="off"
+            cols="30"
+            placeholder="Paste your own private key here, or generate a new one"></textarea>
+        </section>
+        <section class="generate-public">
+          <h3>Public Key</h3>
+          <label for="generated-public-key">for encrypting secrets to be sent to others</label>
+          <textarea
+            id="generated-public-key"
+            wrap="off"
+            cols="30"
+            placeholder="Paste your own public key here, or generate a new one"></textarea>
+        </section>
+      </section>
+      <section class="encrypt-decrypt">
+        <h2>Encrypt / Decrypt</h2>
+        <section class="plaintext">
+          <h3>Unencrypted</h3>
+          <div>
+            <textarea
+              id="plaintext"
+              size="30"
+              placeholder="Enter the secret you want to encrypt here"></textarea>
+          </div>
+          <input class="encrypt-button" type="button" value="Encrypt >>">
+        </section>
+        <section class="ciphertext">
+          <h3>Encrypted</h3>
+          <div>
+            <textarea
+              id="ciphertext"
+              size="30"
+              placeholder="Enter the secret you want to decrypt here"></textarea>
+          </div>
+          <input class="decrypt-button" type="button" value="<< Decrypt">
+        </section>
+      </section>
+    </div>
+  </body>
+  <script src="index.js"></script>
+</html>

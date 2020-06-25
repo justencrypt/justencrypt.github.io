@@ -1,0 +1,41 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
+
+.instructions {
+  grid-column: span 2;
+}
+
+.generate-keys {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 0.5em;
+  background: lightyellow;
+}
+
+.generate-private {
+  background: lightpink;
+}
+
+.generate-public {
+  background: lightgreen;
+}
+
+.encrypt-decrypt {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 0.5em;
+  background: lightyellow;
+}
+
+.plaintext {
+  background: lightgreen;
+}
+
+.ciphertext {
+  background: lightpink;
+}
