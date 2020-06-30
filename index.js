@@ -36,8 +36,7 @@ async function exportPrivateKey(key) {
   }
   pemExported += "-----END PRIVATE KEY-----\n";
 
-  const exportKeyOutput = document.querySelector("#generated-private-key");
-  exportKeyOutput.textContent = pemExported;
+  return pemExported;
 }
 
 async function exportPublicKey(key) {
@@ -52,7 +51,7 @@ async function exportPublicKey(key) {
   }
   pemExported += "-----END PUBLIC KEY-----\n";
   const exportKeyOutput = document.querySelector("#generated-public-key");
-  exportKeyOutput.textContent = pemExported;
+  exportKeyOutput.value = pemExported;
 }
 
 async function importPublicKey() {
@@ -93,6 +92,35 @@ function importPrivateKey() {
     true,
     ["decrypt"]
   );
+}
+
+// helper functions for displaying the keys, and persisting into localStorage
+function displayPrivateKey(pem) {
+  document.querySelector("#generated-private-key").value = pem;
+}
+
+function savePrivateKeyToLocalStorage() {
+  const pem = document.querySelector("#generated-private-key").value;
+  window.localStorage.setItem("privateKey", pem);
+}
+
+function loadPrivateKeyFromLocalStorage() {
+  const pem = window.localStorage.getItem("privateKey");
+  document.querySelector("#generated-private-key").value = pem;
+}
+
+function displayPublicKey(pem) {
+  document.querySelector("#generated-public-key").value = pem;
+}
+
+function savePublicKeyToLocalStorage() {
+  const pem = document.querySelector("#generated-public-key").value;
+  window.localStorage.setItem("publicKey", pem);
+}
+
+function loadPublicKeyFromLocalStorage() {
+  const pem = window.localStorage.getItem("publicKey");
+  document.querySelector("#generated-public-key").value = pem;
 }
 
 // Get the encoded message, encrypt it and display a representation
@@ -140,23 +168,41 @@ function generateKeyPair() {
     },
     true,
     ["encrypt", "decrypt"]
-  ).then((keyPair) => {
-    exportPrivateKey(keyPair.privateKey);
-    exportPublicKey(keyPair.publicKey);
+  ).then(async (keyPair) => {
+    const privateKeyPem = await exportPrivateKey(keyPair.privateKey);
+    displayPrivateKey(privateKeyPem);
+    const publicKeyPem = await exportPublicKey(keyPair.publicKey);
+    exportPublicKey(publicKeyPem);
   });
 }
 
-const generateKeyButton = document.querySelector(".generate-key-button");
-generateKeyButton.addEventListener("click", () => {
-  generateKeyPair();
-});
+window.addEventListener('DOMContentLoaded', (event) => {
+  console.log("Retrieving keys from localStorage");
+  loadPrivateKeyFromLocalStorage();
+  loadPublicKeyFromLocalStorage();
 
-const encryptButton = document.querySelector(".encrypt-button");
-encryptButton.addEventListener("click", () => {
-  encryptMessage();
-});
+  const generateKeyButton = document.querySelector(".generate-key-button");
+  generateKeyButton.addEventListener("click", () => {
+    generateKeyPair();
+  });
 
-const decryptButton = document.querySelector(".decrypt-button");
-decryptButton.addEventListener("click", () => {
-  decryptMessage();
+  const savePrivateKeyButton = document.querySelector(".save-private-key-button");
+  savePrivateKeyButton.addEventListener("click", () => {
+    savePrivateKeyToLocalStorage();
+  });
+
+  const savePublicKeyButton = document.querySelector(".save-public-key-button");
+  savePublicKeyButton.addEventListener("click", () => {
+    savePublicKeyToLocalStorage();
+  });
+
+  const encryptButton = document.querySelector(".encrypt-button");
+  encryptButton.addEventListener("click", () => {
+    encryptMessage();
+  });
+
+  const decryptButton = document.querySelector(".decrypt-button");
+  decryptButton.addEventListener("click", () => {
+    decryptMessage();
+  });
 });
