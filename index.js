@@ -99,6 +99,11 @@ function displayPrivateKey(pem) {
   document.querySelector("#generated-private-key").value = pem;
 }
 
+function createLinkToDownloadPrivateKey(pem) {
+  document.querySelector(".download-private-key-button").href =
+    "data:text/plain;charset=utf-8," + encodeURIComponent(pem);
+}
+
 function savePrivateKeyToLocalStorage(pem) {
   window.localStorage.setItem("privateKey", pem);
 }
@@ -110,6 +115,11 @@ function loadPrivateKeyFromLocalStorage() {
 
 function displayPublicKey(pem) {
   document.querySelector("#generated-public-key").value = pem;
+}
+
+function createLinkToDownloadPublicKey(pem) {
+  document.querySelector(".download-public-key-button").href =
+    "data:text/plain;charset=utf-8," + encodeURIComponent(pem);
 }
 
 function savePublicKeyToLocalStorage(pem) {
@@ -170,9 +180,11 @@ function generateKeyPair() {
     const privateKeyPem = await exportPrivateKey(keyPair.privateKey);
     savePrivateKeyToLocalStorage(privateKeyPem);
     displayPrivateKey(privateKeyPem);
+    createLinkToDownloadPrivateKey(privateKeyPem);
     const publicKeyPem = await exportPublicKey(keyPair.publicKey);
     savePublicKeyToLocalStorage(publicKeyPem);
     displayPublicKey(publicKeyPem);
+    createLinkToDownloadPublicKey(publicKeyPem);
   });
 }
 
