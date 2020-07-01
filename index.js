@@ -50,8 +50,8 @@ async function exportPublicKey(key) {
     pemExported += exportedAsBase64.substring(i, i + 76) + "\n";
   }
   pemExported += "-----END PUBLIC KEY-----\n";
-  const exportKeyOutput = document.querySelector("#generated-public-key");
-  exportKeyOutput.value = pemExported;
+
+  return pemExported;
 }
 
 async function importPublicKey() {
@@ -99,8 +99,7 @@ function displayPrivateKey(pem) {
   document.querySelector("#generated-private-key").value = pem;
 }
 
-function savePrivateKeyToLocalStorage() {
-  const pem = document.querySelector("#generated-private-key").value;
+function savePrivateKeyToLocalStorage(pem) {
   window.localStorage.setItem("privateKey", pem);
 }
 
@@ -113,8 +112,7 @@ function displayPublicKey(pem) {
   document.querySelector("#generated-public-key").value = pem;
 }
 
-function savePublicKeyToLocalStorage() {
-  const pem = document.querySelector("#generated-public-key").value;
+function savePublicKeyToLocalStorage(pem) {
   window.localStorage.setItem("publicKey", pem);
 }
 
@@ -170,9 +168,11 @@ function generateKeyPair() {
     ["encrypt", "decrypt"]
   ).then(async (keyPair) => {
     const privateKeyPem = await exportPrivateKey(keyPair.privateKey);
+    savePrivateKeyToLocalStorage(privateKeyPem);
     displayPrivateKey(privateKeyPem);
     const publicKeyPem = await exportPublicKey(keyPair.publicKey);
-    exportPublicKey(publicKeyPem);
+    savePublicKeyToLocalStorage(publicKeyPem);
+    displayPublicKey(publicKeyPem);
   });
 }
 
@@ -184,16 +184,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
   const generateKeyButton = document.querySelector(".generate-key-button");
   generateKeyButton.addEventListener("click", () => {
     generateKeyPair();
-  });
-
-  const savePrivateKeyButton = document.querySelector(".save-private-key-button");
-  savePrivateKeyButton.addEventListener("click", () => {
-    savePrivateKeyToLocalStorage();
-  });
-
-  const savePublicKeyButton = document.querySelector(".save-public-key-button");
-  savePublicKeyButton.addEventListener("click", () => {
-    savePublicKeyToLocalStorage();
   });
 
   const encryptButton = document.querySelector(".encrypt-button");
