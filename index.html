@@ -36,10 +36,10 @@
         <section>
           <button class="generate-key-button" type="button">Generate keys</button>
           <a class="download-private-key-button" download="private-key-do-not-share.txt" href="">
-            <button>Download Private Key</button>
+            <button>Download My Private Key</button>
           </a>
           <a class="download-public-key-button" download="public-key.txt" href="">
-            <button>Download Public Key</button>
+            <button>Download My Public Key</button>
           </a>
         </section>
         <section class="generate-private">
@@ -70,6 +70,10 @@
               id="plaintext"
               size="30"
               placeholder="Enter the secret you want to encrypt here"></textarea>
+          </div>
+          <div>
+            <label for="public-key-file">Upload recipient public key</label>
+            <input type="file" id="public-key-file">
           </div>
           <input class="encrypt-button" type="button" value="Encrypt >>">
         </section>

@@ -1,3 +1,5 @@
+var recipientPublicKey, myPrivateKey, myPublicKey;
+
 // Utility functions for converting between base64,
 // binary strings and array buffers (byte arrays)
 function ab2str(buf) {
@@ -54,13 +56,13 @@ async function exportPublicKey(key) {
   return pemExported;
 }
 
-async function importPublicKey() {
-  const pem = document.querySelector("#generated-public-key").value.replace(/\n/g, "");
+async function pemToPublicKey(pem) {
   const pemHeader = "-----BEGIN PUBLIC KEY-----";
   const pemFooter = "-----END PUBLIC KEY-----";
-  const pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length);
+  const pemSingleLine = pem.replace(/\n/g, "");
+  const pemContents = pemSingleLine
+    .substring(pemHeader.length, pemSingleLine.length - pemFooter.length);
   const binaryDer = base64ToArrayBuffer(pemContents);
-
   return window.crypto.subtle.importKey(
     "spki",
     binaryDer,
@@ -73,13 +75,13 @@ async function importPublicKey() {
   );
 }
 
-function importPrivateKey() {
-  const pem = document.querySelector("#generated-private-key").value.replace(/\n/g, "");
+async function pemToPrivateKey(pem) {
   const pemHeader = "-----BEGIN PRIVATE KEY-----";
   const pemFooter = "-----END PRIVATE KEY-----";
-  const pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length);
+  const pemSingleLine = pem.replace(/\n/g, "");
+  const pemContents = pemSingleLine
+    .substring(pemHeader.length, pemSingleLine.length - pemFooter.length);
   const binaryDer = base64ToArrayBuffer(pemContents);
-
   return window.crypto.subtle.importKey(
     "pkcs8",
     binaryDer,
@@ -95,6 +97,14 @@ function importPrivateKey() {
 }
 
 // helper functions for displaying the keys, and persisting into localStorage
+function usePrivateKey(pem) {
+  displayPrivateKey(pem);
+  createLinkToDownloadPrivateKey(pem);
+  pemToPrivateKey(pem).then((privateKey) => {
+    myPrivateKey = privateKey;
+  });
+}
+
 function displayPrivateKey(pem) {
   document.querySelector("#generated-private-key").value = pem;
 }
@@ -110,7 +120,15 @@ function savePrivateKeyToLocalStorage(pem) {
 
 function loadPrivateKeyFromLocalStorage() {
   const pem = window.localStorage.getItem("privateKey");
-  document.querySelector("#generated-private-key").value = pem;
+  usePrivateKey(pem);
+}
+
+function usePublicKey(pem) {
+  displayPublicKey(pem);
+  createLinkToDownloadPublicKey(pem);
+  pemToPublicKey(pem).then((publicKey) => {
+    myPublicKey = publicKey;
+  });
 }
 
 function displayPublicKey(pem) {
@@ -128,19 +146,26 @@ function savePublicKeyToLocalStorage(pem) {
 
 function loadPublicKeyFromLocalStorage() {
   const pem = window.localStorage.getItem("publicKey");
-  document.querySelector("#generated-public-key").value = pem;
+  usePublicKey(pem);
+}
+
+function loadPublicKeyFromFile() {
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    recipientPublicKey = await pemToPublicKey(reader.result);
+  }
+  reader.readAsText(this.files[0]);
 }
 
 // Get the encoded message, encrypt it and display a representation
 // of the ciphertext in the "Ciphertext" element.
 async function encryptMessage() {
-  const publicKey = await importPublicKey();
   const plaintext = document.querySelector("#plaintext").value;
   const ciphertext = await window.crypto.subtle.encrypt(
     {
       name: "RSA-OAEP"
     },
-    publicKey,
+    recipientPublicKey,
     str2ab(plaintext)
   );
   const ciphertextValue = document.querySelector("#ciphertext");
@@ -150,13 +175,12 @@ async function encryptMessage() {
 // Fetch the ciphertext and decrypt it.
 // Write the decrypted message into the "Decrypted" box.
 async function decryptMessage() {
-  const privateKey = await importPrivateKey();
   const ciphertextValue = document.querySelector("#ciphertext");
   let decrypted = await window.crypto.subtle.decrypt(
     {
       name: "RSA-OAEP"
     },
-    privateKey,
+    myPrivateKey,
     base64ToArrayBuffer(ciphertextValue.value)
   );
 
@@ -179,12 +203,10 @@ function generateKeyPair() {
   ).then(async (keyPair) => {
     const privateKeyPem = await exportPrivateKey(keyPair.privateKey);
     savePrivateKeyToLocalStorage(privateKeyPem);
-    displayPrivateKey(privateKeyPem);
-    createLinkToDownloadPrivateKey(privateKeyPem);
+    usePrivateKey(privateKeyPem);
     const publicKeyPem = await exportPublicKey(keyPair.publicKey);
     savePublicKeyToLocalStorage(publicKeyPem);
-    displayPublicKey(publicKeyPem);
-    createLinkToDownloadPublicKey(publicKeyPem);
+    usePublicKey(publicKeyPem);
   });
 }
 
@@ -207,4 +229,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
   decryptButton.addEventListener("click", () => {
     decryptMessage();
   });
+
+  const publicKeyFileButton = document.querySelector("#public-key-file");
+  publicKeyFileButton.addEventListener("change", loadPublicKeyFromFile);
 });
