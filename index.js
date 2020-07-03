@@ -118,6 +118,15 @@ function savePrivateKeyToLocalStorage(pem) {
   window.localStorage.setItem("privateKey", pem);
 }
 
+function loadKeysFromLocalStorageOrGenerate() {
+  if (window.localStorage.getItem("privateKey") !== null) {
+    loadPrivateKeyFromLocalStorage();
+    loadPublicKeyFromLocalStorage();
+  } else {
+    generateKeyPair();
+  }
+}
+
 function loadPrivateKeyFromLocalStorage() {
   const pem = window.localStorage.getItem("privateKey");
   usePrivateKey(pem);
@@ -212,12 +221,13 @@ function generateKeyPair() {
 
 window.addEventListener('DOMContentLoaded', (event) => {
   console.log("Retrieving keys from localStorage");
-  loadPrivateKeyFromLocalStorage();
-  loadPublicKeyFromLocalStorage();
+  loadKeysFromLocalStorageOrGenerate();
 
   const generateKeyButton = document.querySelector(".generate-key-button");
   generateKeyButton.addEventListener("click", () => {
-    generateKeyPair();
+    if (window.confirm("This will replace your existing keys with new ones. Are you sure?")) {
+      generateKeyPair();
+    }
   });
 
   const encryptButton = document.querySelector(".encrypt-button");
