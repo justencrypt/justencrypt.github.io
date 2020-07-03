@@ -17,7 +17,7 @@
           <label for="collapsible" class="lbl-toggle">How to send a secret</label>
           <div class="collapsible-content">
             <ol>
-              <li>Get the public key from the recipient and put it into the "Public Key" text area.</li>
+              <li>Get the Lock from the recipient and load it the "Browse" button.</li>
               <li>Type your secret into the "Unencrypted" text box and click on the "Encrypt" button.</li>
               <li>Copy the contents of the "Encrypted" text box and send it to the recipient.</li>
             </ol>
@@ -38,67 +38,39 @@
           <label for="collapsible3" class="lbl-toggle">If someone else got your key</label>
           <div class="collapsible-content">
             <ol>
-              <li>Click "Regenerate keys" to get a new set.</li>
-              <li><u>Do not</u> share your private keys with anyone else.</li>
+              <li>Click "Give me a new Key and Lock" to get a new set.</li>
+              <li><u>Do not</u> share your key with anyone else.</li>
             </ol>
           </div>
         </div>
       </section>
       <section class="generate-keys">
-        <h2>Generate Key Pair</h2>
+        <h2>Key and Lock management</h2>
         <section>
-          <button class="generate-key-button" type="button">Regenerate keys</button>
-          <a class="download-private-key-button" download="private-key-do-not-share.txt" href="">
-            <button>Download My Private Key</button>
-          </a>
-          <a class="download-public-key-button" download="public-key.txt" href="">
-            <button>Download My Public Key</button>
-          </a>
-        </section>
-        <section class="generate-private">
-          <h3>Private Key</h3>
-          <label for="generated-private-key">for decrypting secrets that others sent to you</label>
-          <textarea
-            id="generated-private-key"
-            wrap="off"
-            cols="30"
-            placeholder="Paste your own private key here, or generate a new one"></textarea>
-        </section>
-        <section class="generate-public">
-          <h3>Public Key</h3>
-          <label for="generated-public-key">for encrypting secrets to be sent to others</label>
-          <textarea
-            id="generated-public-key"
-            wrap="off"
-            cols="30"
-            placeholder="Paste your own public key here, or generate a new one"></textarea>
+          <button class="generate-key-button" type="button">Give me a new Key and Lock</button>
+          <a class="download-private-key-button"
+             download="private-key-do-not-share.txt"
+             href=""><button>Download my Key</button></a>
+          <a class="download-public-key-button"
+             download="lock-share-this-with-sender.txt"
+             href=""><button>Download my Lock</button></a>
         </section>
       </section>
       <section class="encrypt-decrypt">
-        <h2>Encrypt / Decrypt</h2>
+        <h2>Lock / Unlock</h2>
         <section class="plaintext">
-          <h3>Unencrypted</h3>
           <div>
             <textarea
-              id="plaintext"
+              id="workarea"
               size="30"
-              placeholder="Enter the secret you want to encrypt here"></textarea>
+              placeholder="Put content here to lock or unlock"></textarea>
           </div>
           <div>
-            <label for="public-key-file">Select recipient public key</label>
             <input type="file" id="public-key-file">
+            <label for="public-key-file" class="lbl-public-key-file">Load recipient Lock</label>
           </div>
-          <input class="encrypt-button" type="button" value="Encrypt >>">
-        </section>
-        <section class="ciphertext">
-          <h3>Encrypted</h3>
-          <div>
-            <textarea
-              id="ciphertext"
-              size="30"
-              placeholder="Enter the secret you want to decrypt here"></textarea>
-          </div>
-          <input class="decrypt-button" type="button" value="<< Decrypt">
+          <input class="encrypt-button" type="button" value="Lock">
+          <input class="decrypt-button" type="button" value="Unlock">
         </section>
       </section>
     </div>

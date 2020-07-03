@@ -96,17 +96,12 @@ async function pemToPrivateKey(pem) {
   );
 }
 
-// helper functions for displaying the keys, and persisting into localStorage
+// helper functions for update the download link and global variable
 function usePrivateKey(pem) {
-  displayPrivateKey(pem);
   createLinkToDownloadPrivateKey(pem);
   pemToPrivateKey(pem).then((privateKey) => {
     myPrivateKey = privateKey;
   });
-}
-
-function displayPrivateKey(pem) {
-  document.querySelector("#generated-private-key").value = pem;
 }
 
 function createLinkToDownloadPrivateKey(pem) {
@@ -133,15 +128,10 @@ function loadPrivateKeyFromLocalStorage() {
 }
 
 function usePublicKey(pem) {
-  displayPublicKey(pem);
   createLinkToDownloadPublicKey(pem);
   pemToPublicKey(pem).then((publicKey) => {
     myPublicKey = publicKey;
   });
-}
-
-function displayPublicKey(pem) {
-  document.querySelector("#generated-public-key").value = pem;
 }
 
 function createLinkToDownloadPublicKey(pem) {
@@ -162,6 +152,7 @@ function loadPublicKeyFromFile() {
   const reader = new FileReader();
   reader.onload = async (event) => {
     recipientPublicKey = await pemToPublicKey(reader.result);
+    document.querySelector(".lbl-public-key-file").textContent = this.files[0].name;
   }
   reader.readAsText(this.files[0]);
 }
@@ -169,36 +160,34 @@ function loadPublicKeyFromFile() {
 // Get the encoded message, encrypt it and display a representation
 // of the ciphertext in the "Ciphertext" element.
 async function encryptMessage() {
-  const plaintext = document.querySelector("#plaintext").value;
+  const workarea = document.querySelector("#workarea");
   const ciphertext = await window.crypto.subtle.encrypt(
     {
       name: "RSA-OAEP"
     },
     recipientPublicKey,
-    str2ab(plaintext)
+    str2ab(workarea.value)
   );
-  const ciphertextValue = document.querySelector("#ciphertext");
-  ciphertextValue.value = arrayBufferToBase64(ciphertext);
+  workarea.value = arrayBufferToBase64(ciphertext);
 }
 
 // Fetch the ciphertext and decrypt it.
 // Write the decrypted message into the "Decrypted" box.
 async function decryptMessage() {
-  const ciphertextValue = document.querySelector("#ciphertext");
+  const workarea = document.querySelector("#workarea");
   let decrypted = await window.crypto.subtle.decrypt(
     {
       name: "RSA-OAEP"
     },
     myPrivateKey,
-    base64ToArrayBuffer(ciphertextValue.value)
+    base64ToArrayBuffer(workarea.value)
   );
 
   let dec = new TextDecoder();
-  const decryptedValue = document.querySelector("#plaintext");
-  decryptedValue.value = dec.decode(decrypted);
+  workarea.value = dec.decode(decrypted);
 }
 
-// Generate an encryption key pair, then display to user
+// Generate an encryption key pair, and save to localStorage
 function generateKeyPair() {
   window.crypto.subtle.generateKey(
     {
