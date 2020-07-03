@@ -64,12 +64,14 @@
           <div>
             <textarea
               id="workarea"
-              size="30"
+              maxlength="190"
+              cols="40"
+              rows="5"
               placeholder="Put content here to lock or unlock"></textarea>
           </div>
           <div>
             <input type="file" id="public-key-file">
-            <label for="public-key-file" class="lbl-public-key-file">Load recipient Lock</label>
+            <label for="public-key-file" class="lbl-public-key-file">Load recipient Lock file</label>
           </div>
           <input class="encrypt-button" type="button" value="Lock">
           <input class="decrypt-button" type="button" value="Unlock">
