@@ -43,12 +43,18 @@ body {
 .ciphertext {
   background: lightpink;
 }
+
+/* styling for file download link */
+#download-payload-link {
+  display: none;
+}
+
 /* styling for file upload button */
 input[type='file'] {
   display: none;
 }
 
-.lbl-public-key-file {
+.lbl-public-key-file, .lbl-payload {
   display: inline-block;
   appearance: button;
   -moz-appearance: button;

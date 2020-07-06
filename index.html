@@ -18,10 +18,10 @@
           <label for="collapsible" class="lbl-toggle">How to send a secret</label>
           <div class="collapsible-content">
             <ol>
-              <li>Get the Lock file from the recipient and click on the "Load recipient Lock file" button.</li>
-              <li>Type your secret message into the text box and click on the "Lock" button.</li>
-              <li>The secret message will be locked (random-looking characters).</li>
-              <li>Send this locked message to the recipient.</li>
+              <li>Get the Lock file from the recipient and click on "Load recipient Lock file".</li>
+              <li>Upload the file you want to send by clicking on "Load file to lock/unlock".</li>
+              <li>Click on "Lock" to begin locking. You will be prompted to download the locked file when it's done.</li>
+              <li>Send this locked file to the recipient.</li>
             </ol>
           </div>
         </div>
@@ -31,8 +31,8 @@
           <div class="collapsible-content">
             <ol>
               <li>Download your Lock file and share it with the sender.</li>
-              <li>Get the locked message from the sender and put it into the text box.</li>
-              <li>Click on the "Unlock" button and you will see the original message.</li>
+              <li>Get the locked file from the sender and upload it by clicking on "Load file to lock/unlock".</li>
+              <li>Click on "Unlock" to begin unlocking. You will be prompted to download the unlocked file when it's done.</li>
             </ol>
           </div>
         </div>
@@ -63,12 +63,8 @@
         <h2>Lock / Unlock</h2>
         <section class="plaintext">
           <div>
-            <textarea
-              id="workarea"
-              maxlength="190"
-              cols="40"
-              rows="5"
-              placeholder="Put content here to lock or unlock"></textarea>
+            <input type="file" id="payload-file">
+            <label for="payload-file" class="lbl-payload">Load file to lock/unlock</label>
           </div>
           <div>
             <input type="file" id="public-key-file">
@@ -76,6 +72,7 @@
           </div>
           <input class="encrypt-button" type="button" value="Lock">
           <input class="decrypt-button" type="button" value="Unlock">
+          <a id="download-payload-link" download="" href=""></a>
         </section>
       </section>
     </div>

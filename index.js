@@ -1,9 +1,19 @@
-var recipientPublicKey, myPrivateKey, myPublicKey;
+var recipientPublicKey, myPrivateKey, myPublicKey, payloadArrayBuffer, inputFilename;
 
 // Utility functions for converting between base64,
 // binary strings and array buffers (byte arrays)
+// from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
+
 function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
+  const uint8Array = new Uint8Array(buf);
+  const temp = uint8Array.reduce((acc, i) => acc += String.fromCharCode.apply(null, [i]), "");
+  let outputs = [];
+  const length = uint8Array.byteLength;
+  const CHUNK_SIZE = 500000;
+  for (let i=0; i<length; i+= CHUNK_SIZE) {
+    outputs.push(String.fromCharCode.apply(null, uint8Array.slice(i, i+CHUNK_SIZE)));
+  }
+  return outputs.join("");
 }
 
 function str2ab(str) {
@@ -96,6 +106,23 @@ async function pemToPrivateKey(pem) {
   );
 }
 
+function aesKeyToArrayBuffer(key) {
+  return window.crypto.subtle.exportKey(
+    "raw",
+    key
+  );
+}
+
+function arrayBufferToAesKey(raw) {
+  return window.crypto.subtle.importKey(
+    "raw",
+    raw,
+    "AES-GCM",
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
 // helper functions for update the download link and global variable
 function usePrivateKey(pem) {
   createLinkToDownloadPrivateKey(pem);
@@ -157,34 +184,86 @@ function loadPublicKeyFromFile() {
   reader.readAsText(this.files[0]);
 }
 
-// Get the encoded message, encrypt it and display a representation
-// of the ciphertext in the "Ciphertext" element.
+function loadPayloadFromFile() {
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    payloadArrayBuffer = reader.result;
+    document.querySelector(".lbl-payload").textContent = this.files[0].name;
+    inputFilename = this.files[0].name;
+  }
+  reader.readAsArrayBuffer(this.files[0]);
+}
+
+function updateDownloadLink(action, filename, base64Encoded) {
+  const downloadButton = document.querySelector("#download-payload-link");
+  if (action === "lock") {
+    downloadButton.download = `${filename}.locked`;
+  } else {
+    filename = filename.slice(0, -7);
+    downloadButton.download = `${filename}`;
+  }
+  downloadButton.href =
+    `data:application/octet-stream;base64,${base64Encoded}`
+  downloadButton.click();
+}
+
+// encrypt the uploaded file, and create data URL to download encrypted file
 async function encryptMessage() {
-  const workarea = document.querySelector("#workarea");
-  const ciphertext = await window.crypto.subtle.encrypt(
+  const aesKey = await generateAESKey();
+  const aesKeyArrayBuffer = await aesKeyToArrayBuffer(aesKey);
+  const aesKeyEncrypted = await window.crypto.subtle.encrypt(
     {
       name: "RSA-OAEP"
     },
     recipientPublicKey,
-    str2ab(workarea.value)
+    aesKeyArrayBuffer
   );
-  workarea.value = arrayBufferToBase64(ciphertext);
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const aesCiphertext = await window.crypto.subtle.encrypt(
+    {
+      name: "AES-GCM",
+      iv: iv
+    },
+    aesKey,
+    payloadArrayBuffer
+  );
+  const aesKey_iv_ciphertext = new ArrayBuffer(
+    aesKeyEncrypted.byteLength +
+    iv.byteLength +
+    aesCiphertext.byteLength);
+  const outputView = new Uint8Array(aesKey_iv_ciphertext);
+  outputView.set(new Uint8Array(aesKeyEncrypted), 0);
+  outputView.set(iv, aesKeyEncrypted.byteLength);
+  outputView.set(new Uint8Array(aesCiphertext), aesKeyEncrypted.byteLength + iv.byteLength);
+  const base64Encoded = arrayBufferToBase64(aesKey_iv_ciphertext);
+
+  updateDownloadLink("lock", inputFilename, base64Encoded);
 }
 
-// Fetch the ciphertext and decrypt it.
-// Write the decrypted message into the "Decrypted" box.
+// Decrypt the uploaded file, and create data URL to download decrypted file
 async function decryptMessage() {
-  const workarea = document.querySelector("#workarea");
-  let decrypted = await window.crypto.subtle.decrypt(
+  const aesKey_iv_ciphertext = payloadArrayBuffer;
+  const aesKeyEncrypted = aesKey_iv_ciphertext.slice(0, 256);
+  const iv = aesKey_iv_ciphertext.slice(256, 268);
+  const ciphertext = aesKey_iv_ciphertext.slice(268);
+  const aesKeyArrayBuffer = await window.crypto.subtle.decrypt(
     {
       name: "RSA-OAEP"
     },
     myPrivateKey,
-    base64ToArrayBuffer(workarea.value)
+    aesKeyEncrypted
+  );
+  const aesKey = await arrayBufferToAesKey(aesKeyArrayBuffer);
+  const decrypted = await window.crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv: iv
+    },
+    aesKey,
+    ciphertext
   );
 
-  let dec = new TextDecoder();
-  workarea.value = dec.decode(decrypted);
+  updateDownloadLink("unlock", inputFilename, arrayBufferToBase64(decrypted));
 }
 
 // Generate an encryption key pair, and save to localStorage
@@ -207,6 +286,18 @@ function generateKeyPair() {
     usePublicKey(publicKeyPem);
   });
 }
+
+function generateAESKey() {
+  return window.crypto.subtle.generateKey(
+    {
+        name: "AES-GCM",
+        length: 256,
+    },
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
 
 window.addEventListener('DOMContentLoaded', (event) => {
   console.log("Retrieving keys from localStorage");
@@ -231,4 +322,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
   const publicKeyFileButton = document.querySelector("#public-key-file");
   publicKeyFileButton.addEventListener("change", loadPublicKeyFromFile);
+
+  const payloadFileButton = document.querySelector("#payload-file");
+  payloadFileButton.addEventListener("change", loadPayloadFromFile);
 });
