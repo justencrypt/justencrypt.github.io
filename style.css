@@ -2,46 +2,12 @@ body {
   font-family: monospace;
 }
 
-.container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
-}
-
-.instructions {
-  grid-column: span 2;
-}
-
 .generate-keys {
-  grid-column: span 2;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 0.5em;
-  background: lightyellow;
-}
-
-.generate-private {
-  background: lightpink;
-}
-
-.generate-public {
-  background: lightgreen;
+  background: whitesmoke;
 }
 
 .encrypt-decrypt {
-  grid-column: span 2;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 0.5em;
-  background: lightyellow;
-}
-
-.plaintext {
-  background: lightgreen;
-}
-
-.ciphertext {
-  background: lightpink;
+  background: whitesmoke;
 }
 
 /* styling for file download link */
@@ -55,10 +21,16 @@ input[type='file'] {
 }
 
 .lbl-public-key-file, .lbl-payload {
+  font-family: system-ui;
   display: inline-block;
-  appearance: button;
-  -moz-appearance: button;
-  -webkit-appearance: button;
+  border: solid 1px #bbb;
+  border-radius: 5px;
+  padding: 0.5em 1em;
+  background: #eee;
+}
+
+.lbl-public-key-file:hover, .lbl-payload:hover {
+  background: #fafafa;
 }
 
 /* styling for collapsible sections */
@@ -72,8 +44,8 @@ input[type='checkbox'] {
   font-weight: bold;
   font-size: 1.2rem;
 
-  color: #A77B0E;
-  background: #FAE042;
+  color: dimgray;
+  background: lightgray;
 
   cursor: pointer;
 
@@ -82,7 +54,7 @@ input[type='checkbox'] {
 }
 
 .lbl-toggle:hover {
-  color: #7C5A0B;
+  color: black;
 }
 
 .lbl-toggle::before {
@@ -101,8 +73,7 @@ input[type='checkbox'] {
 }
 
 .collapsible-content {
-  background: rgba(250, 224, 66, .2);
-  border-bottom: 1px solid rgba(250, 224, 66, .45);
+  background: whitesmoke; 
 
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
