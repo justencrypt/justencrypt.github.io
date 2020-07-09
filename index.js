@@ -178,8 +178,12 @@ function loadPublicKeyFromLocalStorage() {
 function loadPublicKeyFromFile() {
   const reader = new FileReader();
   reader.onload = async (event) => {
-    recipientPublicKey = await pemToPublicKey(reader.result);
-    document.querySelector(".lbl-public-key-file").textContent = this.files[0].name;
+    try {
+      recipientPublicKey = await pemToPublicKey(reader.result);
+      document.querySelector(".lbl-public-key-file").textContent = this.files[0].name;
+    } catch(e) {
+      alert(`Invalid Lock file: ${this.files[0].name}`);
+    }
   }
   reader.readAsText(this.files[0]);
 }
@@ -242,28 +246,32 @@ async function encryptMessage() {
 
 // Decrypt the uploaded file, and create data URL to download decrypted file
 async function decryptMessage() {
-  const aesKey_iv_ciphertext = payloadArrayBuffer;
-  const aesKeyEncrypted = aesKey_iv_ciphertext.slice(0, 256);
-  const iv = aesKey_iv_ciphertext.slice(256, 268);
-  const ciphertext = aesKey_iv_ciphertext.slice(268);
-  const aesKeyArrayBuffer = await window.crypto.subtle.decrypt(
-    {
-      name: "RSA-OAEP"
-    },
-    myPrivateKey,
-    aesKeyEncrypted
-  );
-  const aesKey = await arrayBufferToAesKey(aesKeyArrayBuffer);
-  const decrypted = await window.crypto.subtle.decrypt(
-    {
-      name: "AES-GCM",
-      iv: iv
-    },
-    aesKey,
-    ciphertext
-  );
+  try {
+    const aesKey_iv_ciphertext = payloadArrayBuffer;
+    const aesKeyEncrypted = aesKey_iv_ciphertext.slice(0, 256);
+    const iv = aesKey_iv_ciphertext.slice(256, 268);
+    const ciphertext = aesKey_iv_ciphertext.slice(268);
+    const aesKeyArrayBuffer = await window.crypto.subtle.decrypt(
+      {
+        name: "RSA-OAEP"
+      },
+      myPrivateKey,
+      aesKeyEncrypted
+    );
+    const aesKey = await arrayBufferToAesKey(aesKeyArrayBuffer);
+    const decrypted = await window.crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: iv
+      },
+      aesKey,
+      ciphertext
+    );
 
-  updateDownloadLink("unlock", inputFilename, arrayBufferToBase64(decrypted));
+    updateDownloadLink("unlock", inputFilename, arrayBufferToBase64(decrypted));  
+  } catch(e) {
+    alert(`Failed to unlock the file: ${inputFilename}. Check if the sender used your Lock file.`)
+  }
 }
 
 // Generate an encryption key pair, and save to localStorage
