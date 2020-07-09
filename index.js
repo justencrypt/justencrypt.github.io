@@ -9,7 +9,7 @@ function ab2str(buf) {
   const temp = uint8Array.reduce((acc, i) => acc += String.fromCharCode.apply(null, [i]), "");
   let outputs = [];
   const length = uint8Array.byteLength;
-  const CHUNK_SIZE = 500000;
+  const CHUNK_SIZE = 50000;
   for (let i=0; i<length; i+= CHUNK_SIZE) {
     outputs.push(String.fromCharCode.apply(null, uint8Array.slice(i, i+CHUNK_SIZE)));
   }
