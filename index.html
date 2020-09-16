@@ -2,83 +2,186 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <title>Just Encrypt - the right way to share secrets</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
 
+    <link rel="stylesheet" href="css/sgds-1.3.15.css" />
+    <link rel="stylesheet" href="css/style.css">
+  </head>
   <body>
-    <header>
-      <h1>Just Encrypt - the right way to share secrets</h1>
-    </header>
-    <div class="container">
-      <section class="instructions">
-        <div class="wrap-collabsible">
-          <input id="collapsible" class="toggle" type="checkbox">
-          <label for="collapsible" class="lbl-toggle">How to send a secret</label>
-          <div class="collapsible-content">
-            <ol>
-              <li>Get the Lock file from the recipient and click on "Load recipient Lock file".</li>
-              <li>Upload the file you want to send by clicking on "Load file to lock/unlock".</li>
-              <li>Click on "Lock" to begin locking. You will be prompted to download the locked file when it's done.</li>
-              <li>Send this locked file to the recipient.</li>
-            </ol>
+    <div class="masthead-container if-fixed has-background-white" id="navbar" style="z-index:50;">
+      <div class="sgds-container padding--left--sm is-fluid">
+        <nav class="sgds-navbar" role="navigation">
+          <div class="padding--left--sm padding--top--sm padding--bottom--sm">
+            <span class="is-size-2">JUST ENCRYPT</span>
           </div>
-        </div>
-        <div class="wrap-collabsible">
-          <input id="collapsible2" class="toggle" type="checkbox">
-          <label for="collapsible2" class="lbl-toggle">How to receive a secret</label>
-          <div class="collapsible-content">
-            <ol>
-              <li>Download your Lock file and share it with the sender.</li>
-              <li>Get the locked file from the sender and upload it by clicking on "Load file to lock/unlock".</li>
-              <li>Click on "Unlock" to begin unlocking. You will be prompted to download the unlocked file when it's done.</li>
-            </ol>
+          <div id="mainnav-1" class="sgds-navbar-menu">
+            <div class="sgds-navbar-end">
+              <a class="sgds-navbar-item is-uppercase is-tab" target="_blank" href="https://github.com/justencrypt/justencrypt.github.io">
+                GITHUB
+              </a>
+            </div>
           </div>
-        </div>
-        <div class="wrap-collabsible">
-          <input id="collapsible3" class="toggle" type="checkbox">
-          <label for="collapsible3" class="lbl-toggle">If someone else got your key</label>
-          <div class="collapsible-content">
-            <ol>
-              <li>Click "Give me a new Key and Lock" to get a new set.</li>
-              <li><u>Do not</u> share your key with anyone else.</li>
-            </ol>
-          </div>
-        </div>
-      </section>
-      <section class="generate-keys">
-        <h2>Key and Lock management</h2>
-        <section>
-          <button class="generate-key-button" type="button">Give me a new Key and Lock</button>
-          <a class="download-private-key-button"
-             download="private-key-do-not-share.txt"
-             href=""><button>Download my Key</button></a>
-          <a class="download-public-key-button"
-             download="lock-share-this-with-sender.txt"
-             href=""><button>Download my Lock</button></a>
-        </section>
-      </section>
-      <section class="encrypt-decrypt">
-        <h2>Lock / Unlock</h2>
-        <section>
-          <div>
-            <input type="file" id="payload-file">
-            <label for="payload-file" class="lbl-payload">Load file to lock/unlock</label>
-          </div>
-          <div>
-            <input type="file" id="public-key-file">
-            <label for="public-key-file" class="lbl-public-key-file">Load recipient Lock file</label>
-          </div>
-          <input class="encrypt-button" type="button" value="Lock">
-          <input class="decrypt-button" type="button" value="Unlock">
-          <a id="download-payload-link" download="" href=""></a>
-        </section>
-      </section>
+        </nav>
+      </div>
     </div>
-    <div>
-      <a href="https://github.com/justencrypt/justencrypt.github.io/">github</a>
+
+    <div class="sgds-section is-small has-background-info padding--bottom--sm padding--top--sm padding--right--sm has-text-white">
+      The Right Way to Share Secrets
     </div>
+
+    <section class="content-page">
+      <div class="row">
+        <div class="col is-1 is-hidden-touch"></div>
+
+        <div class="col receive-and-unlock-secret is-5 is-hidden-touch">
+          <div class="padding--lg heading">
+            Recipient: I Want to Receive a Secret
+          </div>
+        </div>
+
+        <div class="col create-and-send-secret is-5 is-hidden-touch">
+          <div class="padding--lg heading">
+            Sender: I Want to Send a Secret
+          </div>
+        </div>
+
+        <div class="col is-1 is-hidden-touch"></div>
+      </div>
+      <div class="row">
+        <div class="col is-1 is-hidden-touch"></div>
+
+        <div class="col receive-and-unlock-secret is-5">
+          <div class="padding--left--lg padding--bottom--sm">
+            1. Generate and Download the Lock
+          </div>
+          <div class="padding--left--lg padding--bottom--lg">
+            <a class="sgds-button is-primary download-private-key-button grey" download="private-key-do-not-share.txt">
+              <i class="sgds-icon sgds-icon-download"></i>Download Key
+            </a>
+            <a class="sgds-button is-primary download-public-key-button grey" download="lock-share-this-with-sender.txt">
+              <i class="sgds-icon sgds-icon-download"></i>Download Lock
+            </a>
+            <div>
+              <a class="generate-key-button">
+                Regenerate Key and Lock
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col create-and-send-secret is-5 is-hidden-touch">
+        </div>
+
+        <div class="col is-1 is-hidden-touch"></div>
+      </div>
+
+      <div class="row">
+        <div class="col is-1 is-hidden-touch"></div>
+
+        <div class="col receive-and-unlock-secret is-5">
+          <div class="padding--left--lg padding--bottom--sm">
+            2. Send the Lock to Sender
+          </div>
+        </div>
+
+        <div class="col create-and-send-secret is-5 is-hidden-touch">
+        </div>
+
+        <div class="col is-1 is-hidden-touch"></div>
+      </div>
+
+      <div class="row">
+        <div class="col is-1 is-hidden-touch"></div>
+
+        <div class="col receive-and-unlock-secret is-5 is-hidden-touch">
+        </div>
+
+        <div class="col create-and-send-secret is-5">
+          <div class="padding--left--lg padding--bottom--sm">
+            3. Upload the Lock from Receiver
+          </div>
+          <div class="padding--left--lg padding--bottom--lg">
+            <label class="file">
+              <input type="file" id="public-key-file" style="display: none">
+              <a class="sgds-button is-primary lbl-public-key-file grey">
+                <i class="sgds-icon sgds-icon-upload"></i>Upload
+              </a>
+            </label>
+          </div>
+          <div class="padding--left--lg padding--bottom--sm">
+            4. Upload the File to be Locked
+          </div>
+          <div class="padding--left--lg padding--bottom--lg">
+            <label class="file">
+              <input type="file" id="payload-file" style="display: none">
+              <a class="sgds-button is-primary lbl-payload grey">
+                <i class="sgds-icon sgds-icon-upload"></i>Upload
+              </a>
+            </label>
+          </div>
+          <div class="padding--left--lg padding--bottom--sm">
+            5. Lock the File
+          </div>
+          <div class="padding--left--lg padding--bottom--lg is-full">
+            <a class="sgds-button is-primary encrypt-button grey">
+              <i class="sgds-icon sgds-icon-lock"></i>Lock
+            </a>
+          </div>
+          <div class="padding--left--lg padding--bottom--sm">
+            6. Send the Locked File to Receiver
+          </div>
+        </div>
+
+        <div class="col is-1 is-hidden-touch"></div>
+      </div>
+
+      <div class="row">
+        <div class="col is-1 is-hidden-touch"></div>
+
+        <div class="col receive-and-unlock-secret is-5">
+          <div class="padding--left--lg padding--bottom--sm">
+            7. Upload the Locked File Sent by Sender
+          </div>
+          <div class="padding--left--lg padding--bottom--lg">
+            <label class="file">
+              <input type="file" id="locked-payload-file" style="display: none">
+              <a class="sgds-button is-primary lbl-locked-payload grey">
+                <i class="sgds-icon sgds-icon-upload"></i>Upload
+              </a>
+            </label>
+          </div>
+          <div class="padding--left--lg padding--bottom--sm">
+            8. Unlock the Locked File
+          </div>
+          <div class="padding--left--lg padding--bottom--sm">
+            <a class="sgds-button is-primary decrypt-button grey">
+              <i class="sgds-icon sgds-icon-unlock"></i>Unlock
+            </a>
+          </div>
+        </div>
+
+        <div class="col create-and-send-secret is-5 is-hidden-touch">
+        </div>
+
+        <div class="col is-1 is-hidden-touch"></div>
+      </div>
+
+      <a id="download-payload-link" download="" href=""></a>
+    </section>
+    <footer class='sgds-footer'>
+      <div class="top-section">
+        <div class="sgds-container is-fluid">
+          <div class="row is-multiline">
+            <div class="col is-12 has-text-right-desktop has-text-right-tablet has-text-left-mobile">
+              <p>© 2020 GDS. All Rights Reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
+  <script src="js/jquery-3.5.1.min.js"></script>
+  <script src="js/sgds-1.3.15.min.js"></script>
   <script src="index.js"></script>
 </html>

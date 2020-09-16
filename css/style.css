@@ -1,0 +1,46 @@
+
+body {
+  font-family: monospace, verdana;
+  display: flex;
+  flex-direction: column;
+}
+
+div.col {
+  font-size: 16px;
+}
+
+div.heading {
+  font-weight: 700;
+  font-size: large;
+}
+
+h1, h2 {
+  color: #323232;
+}
+
+a.generate-key-button {
+  text-decoration: underline;
+  color: grey;
+}
+
+a.sgds-button.grey, div.sgds-accordion.grey a {
+  background-color: #555555;
+  color: white;
+  margin-bottom: 5px;
+}
+
+a.sgds-button.grey:hover {
+  background-color: #777777;
+}
+
+a.sgds-button i {
+  padding-right: 5px;
+}
+
+div.sgds-accordion-body ol {
+  padding-left: 15px;
+}
+
+section.sgds-section {
+  margin-bottom: -3rem;
+}

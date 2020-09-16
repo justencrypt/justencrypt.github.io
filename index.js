@@ -1,4 +1,4 @@
-var recipientPublicKey, myPrivateKey, myPublicKey, payloadArrayBuffer, inputFilename;
+var recipientPublicKey, myPrivateKey, myPublicKey, payloadArrayBuffer, lockedPayloadArrayBuffer, inputFilename;
 
 // Utility functions for converting between base64,
 // binary strings and array buffers (byte arrays)
@@ -198,6 +198,17 @@ function loadPayloadFromFile() {
   reader.readAsArrayBuffer(this.files[0]);
 }
 
+function loadLockedPayloadFromFile() {
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    lockedPayloadArrayBuffer = reader.result;
+    document.querySelector(".lbl-locked-payload").textContent = this.files[0].name;
+    inputFilename = this.files[0].name;
+  }
+  reader.readAsArrayBuffer(this.files[0]);
+}
+
+
 function updateDownloadLink(action, filename, base64Encoded) {
   const downloadButton = document.querySelector("#download-payload-link");
   if (action === "lock") {
@@ -247,7 +258,7 @@ async function encryptMessage() {
 // Decrypt the uploaded file, and create data URL to download decrypted file
 async function decryptMessage() {
   try {
-    const aesKey_iv_ciphertext = payloadArrayBuffer;
+    const aesKey_iv_ciphertext = lockedPayloadArrayBuffer;
     const aesKeyEncrypted = aesKey_iv_ciphertext.slice(0, 256);
     const iv = aesKey_iv_ciphertext.slice(256, 268);
     const ciphertext = aesKey_iv_ciphertext.slice(268);
@@ -333,4 +344,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
   const payloadFileButton = document.querySelector("#payload-file");
   payloadFileButton.addEventListener("change", loadPayloadFromFile);
+
+  const lockedPayloadFileButton = document.querySelector("#locked-payload-file");
+  lockedPayloadFileButton.addEventListener("change", loadLockedPayloadFromFile);
 });
